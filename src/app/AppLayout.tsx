@@ -24,6 +24,7 @@ import { useState } from 'react'
 import { Link as RouterLink, Outlet, useLocation } from 'react-router-dom'
 import { useIsDark } from '../lib/colorMode'
 import { useReloadOnNewVersion, useWakeLock } from '../lib/useScreenAlwaysOn'
+import { BrandLogo } from './BrandLogo'
 import { useAuth } from './auth'
 import { FEATURES } from '../features/registry'
 import { WeatherAlerts } from '../features/weather/WeatherAlerts'
@@ -120,15 +121,18 @@ export default function AppLayout() {
           >
             <MenuIcon />
           </IconButton>
-          <Box
-            component="img"
-            src="/favicon.svg"
-            alt=""
-            sx={{ width: 28, height: 28, mr: 1.5, display: { xs: 'none', sm: 'block' } }}
-          />
-          <Typography variant="h6" component="div" noWrap sx={{ fontWeight: 700, fontSize: { xs: 18, sm: 20 } }}>
-            Kato Board
-          </Typography>
+          <Stack
+            component={RouterLink}
+            to="/"
+            direction="row"
+            aria-label="Kato Board home"
+            sx={{ alignItems: 'center', gap: 1, color: 'inherit', textDecoration: 'none', minWidth: 0 }}
+          >
+            <BrandLogo height={{ xs: 30, sm: 34 }} />
+            <Typography variant="h6" component="span" noWrap sx={{ fontWeight: 700, fontSize: { xs: 18, sm: 20 } }}>
+              Board
+            </Typography>
+          </Stack>
           <NightModeToggle />
           {!isPhone && (
             <Stack direction="row" sx={{ ml: 'auto', pl: 1, gap: 1, flexShrink: 0, alignItems: 'center' }}>

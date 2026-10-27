@@ -11,6 +11,7 @@ import type { ReactNode } from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { ApiError, apiGet } from '../lib/api'
 import { auth, firebaseConfigured, googleProvider } from '../lib/firebase'
+import { BrandLogo } from './BrandLogo'
 
 interface AuthState {
   user: User | null
@@ -36,9 +37,13 @@ function Screen({ children }: { children: ReactNode }) {
   return (
     <Box sx={{ minHeight: '100vh', display: 'grid', placeItems: 'center', bgcolor: 'background.default', p: 2 }}>
       <Paper variant="outlined" sx={{ width: '100%', maxWidth: 400, p: { xs: 3, sm: 4 }, textAlign: 'center' }}>
-        <Box component="img" src="/favicon.svg" alt="" sx={{ width: 56, height: 56, mb: 2 }} />
-        <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
-          Kato Board
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1 }}>
+          <BrandLogo height={84} />
+        </Box>
+        <Typography
+          sx={{ fontWeight: 700, letterSpacing: '0.35em', textTransform: 'uppercase', fontSize: 13, mb: 2 }}
+        >
+          Board
         </Typography>
         {children}
       </Paper>
