@@ -20,6 +20,19 @@ src/
 To add a feature: create `src/features/<name>/` with its pages, then add one entry to
 `FEATURES` in `src/features/registry.tsx`. It shows up in the nav automatically.
 
+## Login
+
+The whole app sits behind **Sign in with Google** (Firebase Authentication, free plan, project
+`kato-board`). A device stays signed in until **Sign out** (bottom of the side menu); Firebase
+renews the token in the background. The API decides who gets in (its `ALLOWED_EMAILS`); any
+other Google account sees "isn't allowed". Code: `src/lib/firebase.ts`, `src/app/auth.tsx`,
+and `src/lib/api.ts` (adds the token to every request).
+
+## Always-on screen
+
+While open, the page keeps the display awake (Wake Lock) and checks `/version.json` every
+5 minutes; after a new deploy it reloads itself (`src/lib/useScreenAlwaysOn.ts`).
+
 ## Colours
 
 Card and chart colours follow each metric's direction over the **last 2 hours** (computed by the API).
@@ -70,9 +83,11 @@ Start `pond-api` first (`docker compose up` in that folder).
 1. Push this folder as its own repo and import it in Netlify. `netlify.toml` already sets
    the build command (`npm run build`), the publish folder (`dist`), and the SPA redirect,
    so links like `/pond/devices/...` still work after a page refresh.
-2. In **Site configuration → Environment variables**, add
-   `VITE_API_URL = https://pond-api-xxxxxxxx-uw.a.run.app` (your Cloud Run URL, no trailing slash).
-3. Deploy. Then add your Netlify URL to `CORS_ORIGINS` on the API, or the browser will
-   block the requests.
+2. In **Site configuration → Environment variables**, add `VITE_API_URL` (your Cloud Run URL,
+   no trailing slash) and the four `VITE_FIREBASE_*` values from `.env.example`.
+3. Deploy. Then:
+   - add your Netlify URL to `CORS_ORIGINS` on the API, or the browser will block the requests;
+   - in Firebase console → Authentication → Settings → **Authorized domains**, add the Netlify
+     domain, or Google sign-in will refuse to open there.
 
-`VITE_API_URL` is baked in at build time, so if you change it, trigger a new Netlify deploy.
+`VITE_*` values are baked in at build time, so if you change one, trigger a new Netlify deploy.

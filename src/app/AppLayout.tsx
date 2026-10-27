@@ -1,8 +1,11 @@
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
+import LogoutIcon from '@mui/icons-material/Logout'
 import MenuIcon from '@mui/icons-material/Menu'
 import AppBar from '@mui/material/AppBar'
+import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import Container from '@mui/material/Container'
 import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
@@ -20,6 +23,8 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { useState } from 'react'
 import { Link as RouterLink, Outlet, useLocation } from 'react-router-dom'
 import { useIsDark } from '../lib/colorMode'
+import { useReloadOnNewVersion, useWakeLock } from '../lib/useScreenAlwaysOn'
+import { useAuth } from './auth'
 import { FEATURES } from '../features/registry'
 import { WeatherAlerts } from '../features/weather/WeatherAlerts'
 import { WeatherChip } from '../features/weather/WeatherChip'
@@ -30,22 +35,45 @@ const DRAWER_WIDTH = 232
 
 function Nav({ onNavigate }: { onNavigate?: () => void }) {
   const { pathname } = useLocation()
+  const { user, signOut } = useAuth()
   return (
-    <List sx={{ px: 1 }}>
-      {FEATURES.map((f) => (
-        <ListItemButton
-          key={f.path}
-          component={RouterLink}
-          to={f.path}
-          selected={pathname.startsWith(f.path)}
-          onClick={onNavigate}
-          sx={{ borderRadius: 2 }}
+    <Stack sx={{ flex: 1, minHeight: 0 }}>
+      <List sx={{ px: 1 }}>
+        {FEATURES.map((f) => (
+          <ListItemButton
+            key={f.path}
+            component={RouterLink}
+            to={f.path}
+            selected={pathname.startsWith(f.path)}
+            onClick={onNavigate}
+            sx={{ borderRadius: 2 }}
+          >
+            <ListItemIcon sx={{ minWidth: 40 }}>{f.icon}</ListItemIcon>
+            <ListItemText primary={f.label} />
+          </ListItemButton>
+        ))}
+      </List>
+      <Box sx={{ mt: 'auto', p: 2, borderTop: 1, borderColor: 'divider' }}>
+        <Stack direction="row" sx={{ alignItems: 'center', gap: 1.25, mb: 1.5, minWidth: 0 }}>
+          <Avatar src={user?.photoURL ?? undefined} sx={{ width: 32, height: 32 }}>
+            {user?.email?.[0]?.toUpperCase()}
+          </Avatar>
+          <Typography variant="body2" noWrap sx={{ color: 'text.secondary', minWidth: 0 }}>
+            {user?.email}
+          </Typography>
+        </Stack>
+        <Button
+          fullWidth
+          size="small"
+          variant="outlined"
+          startIcon={<LogoutIcon />}
+          onClick={signOut}
+          sx={{ borderRadius: 999, color: 'text.secondary', borderColor: 'divider' }}
         >
-          <ListItemIcon sx={{ minWidth: 40 }}>{f.icon}</ListItemIcon>
-          <ListItemText primary={f.label} />
-        </ListItemButton>
-      ))}
-    </List>
+          Sign out
+        </Button>
+      </Box>
+    </Stack>
   )
 }
 
@@ -71,6 +99,9 @@ export default function AppLayout() {
   const { data: outlook } = usePolling(fetchOutlook, OUTLOOK_REFRESH_MS)
   // Mount weather widgets in one place only, so they don't poll twice.
   const isPhone = useMediaQuery((t: Theme) => t.breakpoints.down('sm'), { noSsr: true })
+  // Built to stay open on a wall screen: no sleeping display, picks up new deploys itself.
+  useWakeLock()
+  useReloadOnNewVersion()
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}>
