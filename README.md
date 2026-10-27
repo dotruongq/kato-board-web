@@ -85,6 +85,11 @@ publishes https://kato-board.netlify.app. The `VITE_*` values live in the Netlif
 environment variables, so nothing else is needed. An open dashboard picks up the new version
 within 5 minutes on its own.
 
+This repo is public on purpose: Netlify's free plan only auto-builds private repos for
+recognized team members. Nothing secret lives here - the Firebase values are public
+identifiers, and the allowed-email list and database credentials live only in the private
+API repo and Google Secret Manager.
+
 First-time setup, for reference:
 
 1. Push this folder as its own repo and import it in Netlify. `netlify.toml` already sets
