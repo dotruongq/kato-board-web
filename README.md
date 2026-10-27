@@ -80,6 +80,13 @@ Start `pond-api` first (`docker compose up` in that folder).
 
 ## Deploy to Netlify
 
+**Auto-deploy is on:** every push to `main` on GitHub (`dotruongq/kato-board-web`) builds and
+publishes https://kato-board.netlify.app. The `VITE_*` values live in the Netlify site's
+environment variables, so nothing else is needed. An open dashboard picks up the new version
+within 5 minutes on its own.
+
+First-time setup, for reference:
+
 1. Push this folder as its own repo and import it in Netlify. `netlify.toml` already sets
    the build command (`npm run build`), the publish folder (`dist`), and the SPA redirect,
    so links like `/pond/devices/...` still work after a page refresh.
