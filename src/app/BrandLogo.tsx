@@ -12,7 +12,8 @@ export function BrandLogo({ height }: { height: number | Record<string, number> 
       component="img"
       src={dark ? '/brand/kato-logo-light.png' : '/brand/kato-logo-dark.png'}
       alt="Kato"
-      sx={{ height, width: 'auto', display: 'block', flexShrink: 0 }}
+      // maxWidth + contain: on very narrow screens the logo shrinks instead of overflowing.
+      sx={{ height, width: 'auto', maxWidth: '100%', objectFit: 'contain', display: 'block', flexShrink: 0 }}
     />
   )
 }

@@ -27,6 +27,7 @@ import { useReloadOnNewVersion, useWakeLock } from '../lib/useScreenAlwaysOn'
 import { BrandLogo } from './BrandLogo'
 import { useAuth } from './auth'
 import { FEATURES } from '../features/registry'
+import { PushToasts } from '../features/alerts/PushToasts'
 import { WeatherAlerts } from '../features/weather/WeatherAlerts'
 import { WeatherChip } from '../features/weather/WeatherChip'
 import { fetchOutlook } from '../features/weather/api'
@@ -178,6 +179,7 @@ export default function AppLayout() {
             </Stack>
           )}
           <Outlet />
+          <PushToasts />
         </Container>
       </Box>
     </Box>

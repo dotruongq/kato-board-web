@@ -36,9 +36,9 @@ function GoogleMark() {
 function Screen({ children }: { children: ReactNode }) {
   return (
     <Box sx={{ minHeight: '100vh', display: 'grid', placeItems: 'center', bgcolor: 'background.default', p: 2 }}>
-      <Paper variant="outlined" sx={{ width: '100%', maxWidth: 400, p: { xs: 3, sm: 4 }, textAlign: 'center' }}>
+      <Paper variant="outlined" sx={{ width: '100%', maxWidth: 400, p: { xs: 2.5, sm: 4 }, textAlign: 'center' }}>
         <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1 }}>
-          <BrandLogo height={84} />
+          <BrandLogo height={{ xs: 64, sm: 84 }} />
         </Box>
         <Typography
           sx={{ fontWeight: 700, letterSpacing: '0.35em', textTransform: 'uppercase', fontSize: 13, mb: 2 }}

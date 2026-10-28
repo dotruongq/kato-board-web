@@ -1,3 +1,4 @@
+import NotificationsActiveOutlinedIcon from '@mui/icons-material/NotificationsActiveOutlined'
 import WaterIcon from '@mui/icons-material/Water'
 import { Suspense, lazy, type ReactNode } from 'react'
 import type { RouteObject } from 'react-router-dom'
@@ -5,6 +6,7 @@ import PondDashboardPage from './pond/pages/PondDashboardPage'
 
 // Chart pages pull in @mui/x-charts, so load them on demand.
 const DeviceDetailPage = lazy(() => import('./pond/pages/DeviceDetailPage'))
+const AlertsPage = lazy(() => import('./alerts/AlertsPage'))
 
 export interface Feature {
   path: string
@@ -23,5 +25,11 @@ export const FEATURES: Feature[] = [
       { path: 'pond', element: <PondDashboardPage /> },
       { path: 'pond/devices/:deviceId', element: <Suspense><DeviceDetailPage /></Suspense> },
     ],
+  },
+  {
+    path: '/alerts',
+    label: 'Alerts',
+    icon: <NotificationsActiveOutlinedIcon />,
+    routes: [{ path: 'alerts', element: <Suspense><AlertsPage /></Suspense> }],
   },
 ]
