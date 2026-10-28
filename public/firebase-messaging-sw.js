@@ -10,3 +10,22 @@ firebase.initializeApp(Object.fromEntries(params.entries()))
 // Messages with a `notification` payload are displayed automatically; clicking one opens
 // the `link` the API set (the affected pond, or the dashboard).
 firebase.messaging()
+
+// Notifications the open app shows itself (see showSystemNotification) carry `katoUrl`:
+// focus Kato Board and go there, or open it if it's closed.
+self.addEventListener('notificationclick', (event) => {
+  const url = event.notification.data && event.notification.data.katoUrl
+  if (!url) return // Firebase's own notifications are handled by Firebase
+  event.notification.close()
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windows) => {
+      const target = new URL(url, self.location.origin).href
+      for (const w of windows) {
+        if (new URL(w.url).origin === self.location.origin) {
+          return w.focus().then(() => w.navigate(target))
+        }
+      }
+      return self.clients.openWindow(target)
+    }),
+  )
+})

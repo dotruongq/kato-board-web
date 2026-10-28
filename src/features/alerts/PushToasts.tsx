@@ -11,7 +11,7 @@ export function PushToasts() {
   useEffect(() => {
     void refreshPushToken().catch(() => undefined)
     let unsubscribe = () => {}
-    void onForegroundNotice((title, body) => setNotice({ title, body })).then((u) => (unsubscribe = u))
+    void onForegroundNotice(({ title, body }) => setNotice({ title, body })).then((u) => (unsubscribe = u))
     return () => unsubscribe()
   }, [])
 

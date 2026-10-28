@@ -74,10 +74,41 @@ export async function refreshPushToken(): Promise<void> {
   }
 }
 
-/** While the app is open, the service worker doesn't show notifications; hand them to the page. */
-export async function onForegroundNotice(handler: (title: string, body: string) => void): Promise<() => void> {
+export interface ForegroundNotice {
+  title: string
+  body: string
+  link?: string
+  tag?: string
+}
+
+/**
+ * While the app is open, Firebase hands alerts to the page instead of showing them. Show a
+ * system notification anyway (so it lands in the phone's notification shade like any other
+ * alert) and pass it to the page for the in-app banner.
+ */
+export async function onForegroundNotice(handler: (n: ForegroundNotice) => void): Promise<() => void> {
   if (!firebaseApp || !(await isSupported())) return () => {}
   return onMessage(getMessaging(firebaseApp), (payload: MessagePayload) => {
-    handler(payload.notification?.title ?? 'Kato Board', payload.notification?.body ?? '')
+    const notice: ForegroundNotice = {
+      title: payload.notification?.title ?? 'Kato Board',
+      body: payload.notification?.body ?? '',
+      link: payload.fcmOptions?.link,
+      tag: (payload.notification as { tag?: string } | undefined)?.tag,
+    }
+    void showSystemNotification(notice)
+    handler(notice)
+  })
+}
+
+async function showSystemNotification(n: ForegroundNotice): Promise<void> {
+  if (Notification.permission !== 'granted') return
+  const reg = await navigator.serviceWorker.getRegistration('/firebase-cloud-messaging-push-scope')
+  await reg?.showNotification(n.title, {
+    body: n.body,
+    icon: '/brand/koi-192.png',
+    badge: '/brand/koi-badge.png',
+    tag: n.tag,
+    // Read by the service worker's click handler to open the right page.
+    data: { katoUrl: n.link ?? '/pond' },
   })
 }
