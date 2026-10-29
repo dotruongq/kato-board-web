@@ -12,6 +12,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { ApiError, apiGet } from '../lib/api'
 import { auth, firebaseConfigured, googleProvider } from '../lib/firebase'
 import { BrandLogo } from './BrandLogo'
+import { Copyright } from './Copyright'
 
 interface AuthState {
   user: User | null
@@ -35,7 +36,17 @@ function GoogleMark() {
 
 function Screen({ children }: { children: ReactNode }) {
   return (
-    <Box sx={{ minHeight: '100vh', display: 'grid', placeItems: 'center', bgcolor: 'background.default', p: 2 }}>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'grid',
+        placeItems: 'center',
+        alignContent: 'center',
+        gap: 2,
+        bgcolor: 'background.default',
+        p: 2,
+      }}
+    >
       <Paper variant="outlined" sx={{ width: '100%', maxWidth: 400, p: { xs: 2.5, sm: 4 }, textAlign: 'center' }}>
         <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1 }}>
           <BrandLogo height={{ xs: 64, sm: 84 }} />
@@ -47,6 +58,7 @@ function Screen({ children }: { children: ReactNode }) {
         </Typography>
         {children}
       </Paper>
+      <Copyright />
     </Box>
   )
 }

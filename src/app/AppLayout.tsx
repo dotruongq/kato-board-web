@@ -25,6 +25,7 @@ import { Link as RouterLink, Outlet, useLocation } from 'react-router-dom'
 import { useIsDark } from '../lib/colorMode'
 import { useReloadOnNewVersion, useWakeLock } from '../lib/useScreenAlwaysOn'
 import { BrandLogo } from './BrandLogo'
+import { Copyright } from './Copyright'
 import { useAuth } from './auth'
 import { FEATURES } from '../features/registry'
 import { PushToasts } from '../features/alerts/PushToasts'
@@ -180,6 +181,7 @@ export default function AppLayout() {
           )}
           <Outlet />
           <PushToasts />
+          <Copyright sx={{ mt: 6 }} />
         </Container>
       </Box>
     </Box>
