@@ -56,11 +56,14 @@ function LegendItem({ color, label, dashed }: { color: string; label: string; da
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <Box sx={{ minWidth: 0 }}>
+    <Box sx={{ minWidth: 0, textAlign: 'right' }}>
       <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
         {label}
       </Typography>
-      <Typography sx={{ fontWeight: 600, fontSize: 17, fontVariantNumeric: 'tabular-nums' }} noWrap>
+      <Typography
+        sx={{ fontWeight: 600, fontSize: { xs: 18, sm: 22 }, lineHeight: 1.2, fontVariantNumeric: 'tabular-nums' }}
+        noWrap
+      >
         {value}
       </Typography>
     </Box>
@@ -157,44 +160,64 @@ export default function DeviceDetailPage() {
           {loading && <LinearProgress sx={{ height: 3 }} />}
         </Box>
 
-        <Stack
-          direction={{ xs: 'column', md: 'row' }}
-          sx={{ justifyContent: 'space-between', gap: 2, p: { xs: 2.5, sm: 3 }, pb: 1 }}
+        {/* Big number on the left, the range's low / average / high on the right of it. */}
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: 'minmax(0, 1fr) auto',
+            gridTemplateAreas: {
+              xs: '"label label" "value stats" "meta meta" "range range"',
+              md: '"label range" "value stats" "meta meta"',
+            },
+            columnGap: 2,
+            p: { xs: 2.5, sm: 3 },
+            pb: 1,
+          }}
         >
-          <Box>
-            <Typography variant="body1" sx={{ color: 'text.secondary', fontWeight: 500 }}>
-              {metric.label} · {rangeLabel}
-              {series?.data_since && (
-                <Box component="span" sx={{ color: 'text.disabled' }}>
-                  {' '}
-                  · collecting since {formatDateTime(series.data_since)}
-                </Box>
-              )}
+          <Typography variant="body1" sx={{ gridArea: 'label', color: 'text.secondary', fontWeight: 500 }}>
+            {metric.label} · {rangeLabel}
+            {series?.data_since && (
+              <Box component="span" sx={{ color: 'text.disabled' }}>
+                {' '}
+                · collecting since {formatDateTime(series.data_since)}
+              </Box>
+            )}
+          </Typography>
+
+          <Stack direction="row" sx={{ gridArea: 'value', alignItems: 'baseline', gap: 1, mt: 0.5, minWidth: 0 }}>
+            <Typography
+              component="div"
+              sx={{
+                fontSize: { xs: 44, sm: 52 },
+                fontWeight: 600,
+                letterSpacing: '-0.035em',
+                lineHeight: 1,
+                color: stale ? 'text.secondary' : 'text.primary',
+              }}
+            >
+              {series ? formatMetric(metric, series.latest[metric.key], false) : '—'}
             </Typography>
-            <Stack direction="row" sx={{ alignItems: 'baseline', gap: 1, mt: 0.5 }}>
-              <Typography
-                component="div"
-                sx={{
-                  fontSize: { xs: 44, sm: 52 },
-                  fontWeight: 600,
-                  letterSpacing: '-0.035em',
-                  lineHeight: 1,
-                  color: stale ? 'text.secondary' : 'text.primary',
-                }}
-              >
-                {series ? formatMetric(metric, series.latest[metric.key], false) : '—'}
+            {metric.unit && (
+              <Typography sx={{ color: 'text.secondary', fontSize: 20, fontWeight: 500 }}>{metric.unit}</Typography>
+            )}
+            {stale && (
+              <Typography variant="body2" sx={{ color: 'error.main', fontWeight: 600, ml: 0.5 }}>
+                last known
               </Typography>
-              {metric.unit && (
-                <Typography sx={{ color: 'text.secondary', fontSize: 20, fontWeight: 500 }}>
-                  {metric.unit}
-                </Typography>
-              )}
-              {stale && (
-                <Typography variant="body2" sx={{ color: 'error.main', fontWeight: 600, ml: 0.5 }}>
-                  last known
-                </Typography>
-              )}
-            </Stack>
+            )}
+          </Stack>
+
+          {/* Unit is already beside the big number, so the stats leave it off to fit a phone. */}
+          <Stack
+            direction="row"
+            sx={{ gridArea: 'stats', alignSelf: 'end', justifyContent: 'flex-end', gap: { xs: 2, sm: 3 } }}
+          >
+            <Stat label="Low" value={formatMetric(metric, stats?.min, false)} />
+            <Stat label="Average" value={formatMetric(metric, stats?.avg, false)} />
+            <Stat label="High" value={formatMetric(metric, stats?.max, false)} />
+          </Stack>
+
+          <Box sx={{ gridArea: 'meta' }}>
             <Stack direction="row" sx={{ alignItems: 'center', gap: 1, mt: 1.25, minHeight: 24 }}>
               <ChangeChip metric={metric} value={avgChange} />
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
@@ -218,7 +241,7 @@ export default function DeviceDetailPage() {
             )}
           </Box>
 
-          <Box sx={{ alignSelf: { xs: 'stretch', md: 'flex-start' } }}>
+          <Box sx={{ gridArea: 'range', justifySelf: { md: 'end' }, mt: { xs: 2, md: 0 } }}>
             <ToggleButtonGroup
               size="small"
               exclusive
@@ -248,7 +271,7 @@ export default function DeviceDetailPage() {
               ))}
             </ToggleButtonGroup>
           </Box>
-        </Stack>
+        </Box>
 
         {series && (
           <Stack direction="row" sx={{ gap: 2.5, px: { xs: 2.5, sm: 3 }, pt: 1, flexWrap: 'wrap' }}>
@@ -276,7 +299,7 @@ export default function DeviceDetailPage() {
           </Stack>
         )}
 
-        <Box sx={{ px: { xs: 1, sm: 2 }, pt: 1, position: 'relative' }}>
+        <Box sx={{ px: { xs: 1, sm: 2 }, pt: 1, pb: 1, position: 'relative' }}>
           {series ? (
             <>
               <MetricChart
@@ -313,23 +336,6 @@ export default function DeviceDetailPage() {
           ) : (
             <Skeleton variant="rounded" height={320} sx={{ mx: 1, my: 1 }} />
           )}
-        </Box>
-
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-            gap: 2,
-            px: { xs: 2.5, sm: 3 },
-            py: 2,
-            mt: 1,
-            borderTop: 1,
-            borderColor: 'divider',
-          }}
-        >
-          <Stat label="Low" value={formatMetric(metric, stats?.min)} />
-          <Stat label="Average" value={formatMetric(metric, stats?.avg)} />
-          <Stat label="High" value={formatMetric(metric, stats?.max)} />
         </Box>
       </Paper>
 
