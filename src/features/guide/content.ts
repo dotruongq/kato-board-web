@@ -28,12 +28,13 @@ export interface Guide {
   steps: Step[]
 }
 
-export type GroupId = 'test' | 'food' | 'treat'
+export type GroupId = 'test' | 'food' | 'treat' | 'care'
 
 export const GROUPS: { id: GroupId; title: Text }[] = [
   { id: 'test', title: { vi: 'Đo nước', en: 'Test the water' } },
   { id: 'food', title: { vi: 'Làm đồ ăn cho cá', en: 'Make fish food' } },
   { id: 'treat', title: { vi: 'Muối và thuốc', en: 'Salt and medicine' } },
+  { id: 'care', title: { vi: 'Chăm hồ và cá', en: 'Pond and fish care' } },
 ]
 
 export const UI = {
@@ -252,6 +253,87 @@ export const GUIDES: Guide[] = [
       },
       { text: { vi: 'Làm vậy cho đủ 2 tiếng thì thôi.', en: 'Keep doing this for 2 hours. Then stop.' } },
       { text: { vi: 'Đổ Chloram-X để khử tím.', en: 'Pour in Chloram-X to clear the purple.' }, img: 'chloram-x' },
+    ],
+  },
+  {
+    slug: 'bacteria',
+    group: 'care',
+    title: { vi: 'Đánh vi sinh', en: 'Add good bacteria' },
+    img: 'bacteria-jar',
+    before: [
+      { vi: 'Làm đều đặn, khoảng 2 lần 1 tuần.', en: 'Do it often, about 2 times a week.' },
+      {
+        vi: 'Hoặc khi nước quá đục, nhiều bọt và dơ.',
+        en: 'Or when the water is very cloudy, foamy and dirty.',
+      },
+    ],
+    steps: [
+      {
+        text: { vi: 'Lấy hũ vi sinh.', en: 'Get the bacteria jar.' },
+        img: 'bacteria-jar',
+        warn: {
+          vi: 'Hũ ghi "Minced Garlic" nhưng bên trong là vi sinh. KHÔNG phải tỏi.',
+          en: 'The jar says "Minced Garlic", but it holds bacteria. It is NOT garlic.',
+        },
+      },
+      {
+        text: {
+          vi: 'Lấy 1 cái muỗng nhỏ. Hồ trong nhà: nửa muỗng cà phê. Hồ lớn: 1 muỗng cà phê.',
+          en: 'Get a small spoon. Indoor pond: half a teaspoon. Big pond: 1 teaspoon.',
+        },
+        img: 'bacteria-powder',
+      },
+      {
+        text: {
+          vi: 'Bỏ vào hồ. Chỉ bỏ vào ngăn lọc bánh phồng tôm.',
+          en: 'Put it in the pond. Only in the filter part with the "shrimp chip" filter pieces.',
+        },
+      },
+    ],
+  },
+  {
+    slug: 'sedate-koi',
+    group: 'care',
+    title: { vi: 'Đánh thuốc mê cá Koi', en: 'Put a koi to sleep (clove oil)' },
+    img: 'clove-oil',
+    danger: true,
+    alert: {
+      vi: 'Nhiều thuốc quá, cá mê quá sâu. Chỉ 2 nắp.',
+      en: 'Too much and the fish sleeps too deep. Only 2 caps.',
+    },
+    steps: [
+      {
+        text: { vi: 'Lấy cái chậu màu xanh. Đổ nước hồ vào, khoảng 30% chậu.', en: 'Get the blue tub. Fill it about 30% with pond water.' },
+      },
+      { text: { vi: 'Lấy chai thuốc mê Clove.', en: 'Get the Clove oil bottle.' }, img: 'clove-oil' },
+      { text: { vi: 'Dùng cái nắp chai để đong, không dùng muỗng.', en: 'Use the bottle cap to measure. Not a spoon.' } },
+      {
+        text: { vi: 'Bỏ 2 nắp màu đen vào chậu. Vậy thôi.', en: 'Put 2 black caps into the tub. No more.' },
+        warn: { vi: 'Bỏ nhiều, cá sẽ hôn mê rất nhanh.', en: 'Too much and the fish passes out very fast.' },
+      },
+      { text: { vi: 'Cá bắt đầu yếu: thử lật bụng cá lên.', en: 'When the fish gets weak, try turning it belly up.' } },
+      {
+        text: { vi: 'Cá vẫn còn khỏe quá? Thêm 1 nắp nữa.', en: 'Fish still too strong? Add 1 more cap.' },
+        warn: { vi: 'Cẩn thận, đừng bỏ quá nhiều.', en: "Careful. Don't add too much." },
+      },
+      {
+        text: {
+          vi: 'Cá nằm yên, không cử động hoặc cử động ít = cá đã hôn mê.',
+          en: 'Fish lies still, not moving or barely moving = it is asleep.',
+        },
+      },
+      {
+        text: { vi: 'Làm việc cần làm. Tối đa 5 phút sau khi cá hôn mê.', en: 'Do what you need to do. 5 minutes at most after it falls asleep.' },
+        warn: { vi: 'Lâu hơn, cá sẽ rất khó tỉnh.', en: 'Longer than that and the fish is very hard to wake.' },
+      },
+      { text: { vi: 'Mở sủi oxy thật mạnh. Cho cá tắm oxy.', en: 'Turn the air pump up high. Give the fish an oxygen bath.' } },
+      {
+        text: {
+          vi: 'Cá mê quá sâu? Đưa miệng cá vào ống xả nước, cho nước có oxy chảy thẳng vào miệng cá.',
+          en: 'Fish asleep too deep? Hold its mouth at the water outlet pipe, so oxygen-rich water flows straight into its mouth.',
+        },
+      },
+      { text: { vi: 'Cá bắt đầu thở là cá sẽ tỉnh lại.', en: 'Once the fish starts breathing, it will wake up.' } },
     ],
   },
 ]
